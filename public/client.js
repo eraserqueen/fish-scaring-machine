@@ -12,25 +12,53 @@ $(document).ready(function() {
   circle.init($("#circle"));
   point.init($("#point"));
 
-  $(".clickable").click(function(e){
-    if(corner == null || corner != this.id) {
-      console.log("reset position");
+  startingPointSet = false;
+  
+  $(".clickable").mousemove(function(e){
+    if(!startingPointSet)
       setStartingPosition(e.pageX, e.pageY);
-      corner = this.id;
+  });
+  
+  $(".clickable").click(function(){
+    if(!startingPointSet) {
+      startingPointSet = true;
     } else {
       console.log("start looming");
+      vars.init();
       startLooming();
-      corner = null;
     }
   });
   
-  $("#point").click(function(){
-    point.reset();
-  })
+  window.oncontextmenu = function ()
+  {
+      if(typeof(interval)!="undefined") {
+        clearInterval(interval);
+      }
+      point.reset();
+      return false;     // cancel default menu
+  };
+  
 });
 
-corner = null;
 
+vars = {
+  speed:0,
+  increment:0,
+  rate:0,
+  maxsize:0,
+  init: function(){
+    console.log("init variables");
+    this.speed = parseInt($("#speed").val());
+    this.increment = parseInt($("#increment").val());
+    this.rate = parseFloat($("#rate").val());
+    this.maxsize = parseInt($("#maxsize").val());
+    this.timeout = parseInt($("#timeout").val());
+    if(isNaN(this.maxsize) || this.maxsize === 0) {
+      this.maxsize = Math.max(window.innerHeight, window.innerWidth);
+    }
+    console.log(this);
+  }
+};
 mouse= {
   absolute: {x:0,y:0}, //relative to window
   relative: {x:0, y:0}, // relative to container
@@ -91,11 +119,6 @@ point= {
   init: function(elem){
     console.log("init point");
     this.elem = elem;
-    this.radius = parseInt(elem.css("width"))/2; 
-    this.anchor.x = parseInt(elem.css("left"));
-    this.anchor.y = parseInt(elem.css("top"));
-    this.origin.x = this.anchor.x - this.radius;
-    this.origin.y = this.anchor.y - this.radius;
   },
   setOrigin: function(x,y){
     this.origin.x = x ;
@@ -115,8 +138,9 @@ point= {
     point.setAnchor();
   },
   reset: function() {
-    this.setOrigin(0,0);
-    this.setRadius(0);
+    this.setOrigin(circle.origin.x, circle.origin.y);
+    this.setRadius(10);
+    startingPointSet = false;
   }
 };
 
@@ -139,27 +163,26 @@ setStartingPosition= function(xMouse, yMouse){
   // Where r is the radius, cx,cy the origin, and a the angle (in radians).
   var x = circle.origin.x + (circle.radius * Math.cos(angle) * mouse.orientation);
   var y = circle.origin.y + (circle.radius * Math.sin(angle) * mouse.orientation);
-  console.log("placing point at:",x,",",y);
+  console.log("placing point", point);
   
   point.setOrigin(x,y);
-  point.setRadius(10);
 };
 
 loom = function(){
-  point.setRadius(point.radius + increment);
-  if(point.radius > Math.max(window.innerHeight, window.innerWidth)) {
+  point.setRadius(point.radius + vars.increment);
+  if(point.radius > vars.maxsize) {
     console.log("done");
     clearInterval(interval);
-    setTimeout(function(){point.reset()}, 1000);
+    setTimeout(function(){
+      point.reset();
+    }, vars.timeout);
   } else {
     // accelerate exponentially
-    increment += 2 ;
+    vars.increment = vars.increment * vars.rate ;
   }
 };
 
 startLooming = function() {
-  increment = 1, speed = 10;
-  interval = setInterval(loom, speed);
+  interval = setInterval(loom, vars.speed);
 };
-  
   
