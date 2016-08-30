@@ -1,6 +1,10 @@
 body, #container {
   background-color:#efefef;
 }
+#instructions {
+  font:normal 11px verdana;
+  position:fixed;
+}
 #container {
   top:0px;
   left: 0px;
