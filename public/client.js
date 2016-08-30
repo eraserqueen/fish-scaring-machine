@@ -14,12 +14,12 @@ $(document).ready(function() {
 
   startingPointSet = false;
   
-  $(".clickable").mousemove(function(e){
+  container.elem.mousemove(function(e){
     if(!startingPointSet)
       setStartingPosition(e.pageX, e.pageY);
   });
   
-  $(".clickable").click(function(){
+  container.elem.click(function(){
     if(!startingPointSet) {
       startingPointSet = true;
     } else {
@@ -104,11 +104,6 @@ circle= {
     elem.css("left", this.anchor.y+"px");
     console.log("circle", this);
     
-    console.log("init clickable corners");
-    $(".clickable").css("width", this.origin.x +"px");
-    $(".clickable").css("height", this.origin.y +"px");
-    $(".right").css("left", this.origin.x +"px");
-    $(".bottom").css("top", this.origin.y +"px");
   }
 };
 point= {
