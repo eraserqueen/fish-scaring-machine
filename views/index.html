@@ -20,11 +20,22 @@
   </head>
   <body>
     <div id="instructions">
-      Click once to set point of origin around the circle<br/>
-      Click again to loom<br/>
-      App resets automatically after a couple seconds<br/>
-      Press F12 to see debug information
-      <hr/>
+      <fieldset>
+        <legend>Instructions</legend>
+        <strong>Click once to set point of origin around the circle<br/>
+        Click again to loom</strong><br/>
+        App resets automatically after a couple seconds<br/>
+        Circle size will adjust to window size after refresh<br/>
+        Press F12 to see debug information
+      </fieldset>
+      <fieldset>
+      <legend>Controls</legend>
+      <label for="speed">Looming speed (frame/ms):</label> <input type="text" id="speed" value="100"><br/>
+      <label for="increment">Looming increment (px/frame):</label> <input type="text" id="increment" value="1"><br/>
+      <label for="rate">Accelaration (multiplier/frame):</label> <input type="text" id="rate" value="1.5"><br/>
+      <label for="maxsize">Final size (px, defaults to fullscreen):</label> <input type="text" id="maxsize" value=""><br/>
+      <label for="timeout">Wait time after looming (ms):</label> <input type="text" id="timeout" value="2000">
+      </fieldset>
     </div>
     <div id ="container">
       <div class="clickable top right" id="top-right"></div>

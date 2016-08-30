@@ -2,8 +2,18 @@ body, #container {
   background-color:#efefef;
 }
 #instructions {
-  font:normal 11px verdana;
+  font:normal 11px/20px verdana;
   position:fixed;
+}
+fieldset { margin-top:30px; width:100%;}
+fieldset legend {font-weight:bold;}
+fieldset label {
+	display:inline-block;
+	width:250px;
+	margin: 5px;
+}
+fieldset input{
+	width:50px;
 }
 #container {
   top:0px;

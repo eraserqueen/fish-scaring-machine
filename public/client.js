@@ -8,6 +8,7 @@ $(document).ready(function() {
   
   console.log('hello world :o');
   
+  vars.init();
   container.init($("#container"));
   circle.init($("#circle"));
   point.init($("#point"));
@@ -15,6 +16,7 @@ $(document).ready(function() {
   $(".clickable").click(function(e){
     if(corner == null || corner != this.id) {
       console.log("reset position");
+      vars.init();
       setStartingPosition(e.pageX, e.pageY);
       corner = this.id;
     } else {
@@ -26,11 +28,28 @@ $(document).ready(function() {
   
   $("#point").click(function(){
     point.reset();
-  })
+  });
 });
 
 corner = null;
-
+vars = {
+  speed:0,
+  increment:0,
+  rate:0,
+  maxsize:0,
+  init: function(){
+    console.log("init variables");
+    this.speed = parseInt($("#speed").val());
+    this.increment = parseInt($("#increment").val());
+    this.rate = parseFloat($("#rate").val());
+    this.maxsize = parseInt($("#maxsize").val());
+    this.timeout = parseInt($("#timeout").val());
+    if(isNaN(this.maxsize) || this.maxsize === 0) {
+      this.maxsize = Math.max(window.innerHeight, window.innerWidth);
+    }
+    console.log(this);
+  }
+};
 mouse= {
   absolute: {x:0,y:0}, //relative to window
   relative: {x:0, y:0}, // relative to container
@@ -146,20 +165,19 @@ setStartingPosition= function(xMouse, yMouse){
 };
 
 loom = function(){
-  point.setRadius(point.radius + increment);
-  if(point.radius > Math.max(window.innerHeight, window.innerWidth)) {
+  point.setRadius(point.radius + vars.increment);
+  if(point.radius > vars.maxsize) {
     console.log("done");
     clearInterval(interval);
-    setTimeout(function(){point.reset()}, 1000);
+    setTimeout(function(){point.reset()}, vars.timeout);
   } else {
     // accelerate exponentially
-    increment += 2 ;
+    vars.increment = vars.increment * vars.rate ;
   }
 };
 
 startLooming = function() {
-  increment = 1, speed = 10;
-  interval = setInterval(loom, speed);
+  interval = setInterval(loom, vars.speed);
 };
   
   
