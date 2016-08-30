@@ -8,30 +8,39 @@ $(document).ready(function() {
   
   console.log('hello world :o');
   
-  vars.init();
   container.init($("#container"));
   circle.init($("#circle"));
   point.init($("#point"));
 
-  $(".clickable").click(function(e){
-    if(corner == null || corner != this.id) {
-      console.log("reset position");
-      vars.init();
+  startingPointSet = false;
+  
+  $(".clickable").mousemove(function(e){
+    if(!startingPointSet)
       setStartingPosition(e.pageX, e.pageY);
-      corner = this.id;
+  });
+  
+  $(".clickable").click(function(){
+    if(!startingPointSet) {
+      startingPointSet = true;
     } else {
       console.log("start looming");
+      vars.init();
       startLooming();
-      corner = null;
     }
   });
   
-  $("#point").click(function(){
-    point.reset();
-  });
+  window.oncontextmenu = function ()
+  {
+      if(typeof(interval)!="undefined") {
+        clearInterval(interval);
+      }
+      point.reset();
+      return false;     // cancel default menu
+  };
+  
 });
 
-corner = null;
+
 vars = {
   speed:0,
   increment:0,
@@ -110,11 +119,6 @@ point= {
   init: function(elem){
     console.log("init point");
     this.elem = elem;
-    this.radius = parseInt(elem.css("width"))/2; 
-    this.anchor.x = parseInt(elem.css("left"));
-    this.anchor.y = parseInt(elem.css("top"));
-    this.origin.x = this.anchor.x - this.radius;
-    this.origin.y = this.anchor.y - this.radius;
   },
   setOrigin: function(x,y){
     this.origin.x = x ;
@@ -134,8 +138,9 @@ point= {
     point.setAnchor();
   },
   reset: function() {
-    this.setOrigin(0,0);
-    this.setRadius(0);
+    this.setOrigin(circle.origin.x, circle.origin.y);
+    this.setRadius(10);
+    startingPointSet = false;
   }
 };
 
@@ -158,10 +163,9 @@ setStartingPosition= function(xMouse, yMouse){
   // Where r is the radius, cx,cy the origin, and a the angle (in radians).
   var x = circle.origin.x + (circle.radius * Math.cos(angle) * mouse.orientation);
   var y = circle.origin.y + (circle.radius * Math.sin(angle) * mouse.orientation);
-  console.log("placing point at:",x,",",y);
+  console.log("placing point", point);
   
   point.setOrigin(x,y);
-  point.setRadius(10);
 };
 
 loom = function(){
@@ -169,7 +173,9 @@ loom = function(){
   if(point.radius > vars.maxsize) {
     console.log("done");
     clearInterval(interval);
-    setTimeout(function(){point.reset()}, vars.timeout);
+    setTimeout(function(){
+      point.reset();
+    }, vars.timeout);
   } else {
     // accelerate exponentially
     vars.increment = vars.increment * vars.rate ;
@@ -179,5 +185,4 @@ loom = function(){
 startLooming = function() {
   interval = setInterval(loom, vars.speed);
 };
-  
   

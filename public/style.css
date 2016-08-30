@@ -5,6 +5,8 @@ body, #container {
   font:normal 11px/20px verdana;
   position:fixed;
 }
+#instructions button{display:inline-block;float:left; margin-right:10px;cursor:pointer;}
+#instructions h1 {margin:0;}
 fieldset { margin-top:30px; width:100%;}
 fieldset legend {font-weight:bold;}
 fieldset label {
@@ -42,7 +44,4 @@ fieldset input{
   position:absolute;
   z-index:1;
   cursor:pointer;
-}
-.clickable:hover{
-  background-color:#ccc;
 }
