@@ -16,14 +16,14 @@ $(document).ready(function() {
   
   container.elem.mousemove(function(e){
     if(!startingPointSet)
-      setStartingPosition(e.pageX, e.pageY);
+      point.setStartingPosition(e.pageX, e.pageY);
   });
   
   container.elem.click(function(){
     if(!startingPointSet) {
       startingPointSet = true;
+	  console.log("set starting position", point.x, point.y);
     } else {
-      console.log("start looming");
       vars.init();
       startLooming();
     }
@@ -76,13 +76,12 @@ vars = {
   }
 };
 mouse= {
-  absolute: {x:0,y:0}, //relative to window
-  relative: {x:0, y:0}, // relative to container
+  x:0, y:0, // relative to container
   orientation:0 // relative to circle origin
 };
 container= {
   elem: $("#container"),
-  anchor: {x:0, y:0},
+  x:0, y:0, // top left corner
   width:0,
   height:0,
   diagonal: 0,
@@ -95,88 +94,80 @@ container= {
     elem.css("width", this.width + "px");
     elem.css("height", this.height + "px");
     console.log("margins", parseInt($("#container").css("margin")));
-    this.anchor = {
-      x: (window.innerWidth - this.width) /2, 
-      y: (window.innerHeight - this.height) /2
-    };
+    
+    this.x =(window.innerWidth - this.width) /2;
+    this.y =(window.innerHeight - this.height) /2;
+    
     console.log("container", this);
   }
 };
 circle= {
   elem: $("#circle"),
-  origin: { x:0, y:0 }, // relative to container
-  anchor: { x:0, y:0 }, // relative to container
+  x:0, y:0, // center of circle, relative to container
   radius:0,
   init: function(elem){
-    console.log("init circle to be smaller than container");
+    console.log("init circle to be 75% of container");
     this.elem = elem;
-    this.radius = Math.round((container.diagonal*0.55) / 2);
-    var offset = container.width/2 - this.radius;
-    this.anchor = {x: offset, y:offset};
-    this.origin = {x: this.radius + offset, y: this.radius + offset};
-    elem.css("width", this.radius*2+"px");
-    elem.css("height", this.radius*2+"px");
-    elem.css("top", this.anchor.x+"px");
-    elem.css("left", this.anchor.y+"px");
-    console.log("circle", this);
-    
+	this.setOrigin(container.width/2, container.width/2)
+	this.setRadius(this.x*0.75);
+  },
+  setOrigin: function(x,y) {
+    this.x = x;
+	this.y = y;
+    this.elem.css("top", (y-this.radius)+"px");
+    this.elem.css("left", (x-this.radius)+"px");
+  },
+  setRadius: function(r){
+    this.radius = r;
+    this.elem.css("width", r*2+"px");
+    this.elem.css("height", r*2+"px");
+    this.setOrigin(this.x, this.y);
   }
 };
 point= {
-  elem:null,
-  origin: { x:0, y:0 }, // relative to container
-  anchor: { x:0, y:0 }, // relative to container
+  elem:$("#point"),
+  x:0, y:0, // relative to container
   radius:0,
   init: function(elem){
     console.log("init point");
     this.elem = elem;
   },
   setOrigin: function(x,y){
-    this.origin.x = x ;
-    this.origin.y = y ;
-    this.setAnchor();
-  },
-  setAnchor: function(){
-    this.anchor.x = this.origin.x - this.radius;
-    this.anchor.y = this.origin.y - this.radius;
-    this.elem.css("left", this.anchor.x + "px");
-    this.elem.css("top", this.anchor.y + "px");
+    this.x = x ;
+    this.y = y ;
+    this.elem.css("top", (y-this.radius)+"px");
+    this.elem.css("left", (x-this.radius)+"px");
   },
   setRadius: function(r){
     this.radius = r;
-    this.elem.css("width", this.radius*2 + "px");
-    this.elem.css("height", this.radius*2 + "px");
-    point.setAnchor();
+    this.elem.css("width", r*2 + "px");
+    this.elem.css("height", r*2 + "px");
+    this.setOrigin(this.x, this.y);
   },
   reset: function() {
-    this.setOrigin(circle.origin.x, circle.origin.y);
+    this.setOrigin(circle.x, circle.y);
     this.setRadius(10);
     startingPointSet = false;
-  }
-};
-
-
-setStartingPosition= function(xMouse, yMouse){
-  console.log("set starting position");
-  point.reset();
-  
-  mouse.absolute = {x: xMouse, y:yMouse};
-  mouse.relative = {x: xMouse - container.anchor.x, y: yMouse - container.anchor.y};
-  mouse.orientation = mouse.relative.x > circle.origin.x ? 1 : -1;
-  console.log(mouse, container, circle);
-  
-  //Tangent: tan(θ) = Opposite / Adjacent
-  //The inverse tangent function tan^-1 takes the ratio opposite/adjacent and gives the angle θ
-  var angle = Math.atan((circle.origin.y - mouse.relative.y) / (circle.origin.x - mouse.relative.x));
-  // The parametric equation for a circle is
-  // x = cx + r * cos(a)
-  // y = cy + r * sin(a)
-  // Where r is the radius, cx,cy the origin, and a the angle (in radians).
-  var x = circle.origin.x + (circle.radius * Math.cos(angle) * mouse.orientation);
-  var y = circle.origin.y + (circle.radius * Math.sin(angle) * mouse.orientation);
-  console.log("placing point", point);
-  
-  point.setOrigin(x,y);
+  },
+	setStartingPosition: function(xMouse, yMouse){
+	  this.reset();
+	  
+	  mouse.x = xMouse - container.x;
+	  mouse.y = yMouse - container.y;
+	  mouse.orientation = mouse.x > circle.x ? 1 : -1;
+	  
+	  //Tangent: tan(θ) = Opposite / Adjacent
+	  //The inverse tangent function tan^-1 takes the ratio opposite/adjacent and gives the angle θ
+	  var angle = Math.atan((circle.y - mouse.y) / (circle.x - mouse.x));
+	  // The parametric equation for a circle is
+	  // x = cx + r * cos(a)
+	  // y = cy + r * sin(a)
+	  // Where r is the radius, cx,cy the origin, and a the angle (in radians).
+	  var x = circle.x + (circle.radius * Math.cos(angle) * mouse.orientation);
+	  var y = circle.y + (circle.radius * Math.sin(angle) * mouse.orientation);
+	   
+	  this.setOrigin(x,y);
+	}
 };
 
 loom = function(){
@@ -194,6 +185,7 @@ loom = function(){
 };
 
 startLooming = function() {
+  console.log("start looming");
   interval = setInterval(loom, vars.speed);
 };
   
