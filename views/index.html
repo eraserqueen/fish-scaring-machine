@@ -18,13 +18,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/style.css">
     <script src="https://use.fontawesome.com/43bf973f2e.js"></script>
+    <script src="https://cdn.hyperdev.com/us-east-1%3Ab82f94e5-8b61-4d8b-9169-e1eda149aa11%2Fjscolor.min.js"></script>
   </head>
   <body>
     <div id="instructions">
       <button onclick="$('#instructions #content').toggle()" title="toggle menu"><i class="fa fa-eye" aria-hidden="true"></i></button>
       <div id="content">
         <h1>Fish-scaring machine</h1>
-        <fieldset>
+        <fieldset id="description">
           <legend>Instructions</legend>
           <strong>Click once to set point of origin around the circle<br/>
           Click again to loom<br/>
@@ -33,13 +34,19 @@
           Circle size will adjust to window size after refresh<br/>
           Press F12 to see debug information
         </fieldset>
-        <fieldset>
-        <legend>Controls</legend>
-        <label for="speed">Looming speed (frame/ms):</label> <input type="text" id="speed" value="100"><br/>
-        <label for="increment">Looming increment (px/frame):</label> <input type="text" id="increment" value="1"><br/>
-        <label for="rate">Accelaration (multiplier/frame):</label> <input type="text" id="rate" value="1.5"><br/>
-        <label for="maxsize">Final size (px, defaults to fullscreen):</label> <input type="text" id="maxsize" value=""><br/>
-        <label for="timeout">Wait time after looming (ms):</label> <input type="text" id="timeout" value="2000">
+        <fieldset id="colors">
+            <legend>Colors</legend>
+            <label for="bgcolor">Background:</label><input id="bgcolor" class="jscolor" onchange="updateColor(this)" value="000000">
+            <label for="circlecolor">Cirle:</label><input id="circlecolor" class="jscolor" onchange="updateColor(this)" value="333333">
+            <label for="loomcolor">Loom:</label><input id="loomcolor" class="jscolor" onchange="updateColor(this)" value="ffffff">
+        </fieldset>
+        <fieldset id="controls">
+          <legend>Controls</legend>
+          <label for="speed">Looming speed (frame/ms):</label> <input type="text" id="speed" value="100"><br/>
+          <label for="increment">Looming increment (px/frame):</label> <input type="text" id="increment" value="1"><br/>
+          <label for="rate">Accelaration (multiplier/frame):</label> <input type="text" id="rate" value="1.5"><br/>
+          <label for="maxsize">Final size (px, defaults to fullscreen):</label> <input type="text" id="maxsize" value=""><br/>
+          <label for="timeout">Wait time after looming (ms):</label> <input type="text" id="timeout" value="2000">
         </fieldset>
       </div>
     </div>

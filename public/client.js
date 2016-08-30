@@ -38,6 +38,21 @@ $(document).ready(function() {
       return false;     // cancel default menu
   };
   
+  updateColor = function(picker) {
+    var hex = picker.jscolor.toHEXString();
+    switch(picker.id) {
+      case "bgcolor":
+        $("body").css("background-color", hex);
+        container.elem.css("background-color", hex);
+        break;
+      case "circlecolor":
+        circle.elem.css("background-color", hex);
+        break;
+      case "loomcolor":
+        point.elem.css("background-color", hex);
+        break;
+    }
+  };
 });
 
 
@@ -56,6 +71,7 @@ vars = {
     if(isNaN(this.maxsize) || this.maxsize === 0) {
       this.maxsize = Math.max(window.innerHeight, window.innerWidth);
     }
+    
     console.log(this);
   }
 };
