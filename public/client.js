@@ -4,30 +4,44 @@
 // by default, you've got jQuery,
 // add other scripts at the bottom of index.html
 
-vars = {
-  speed:0,
-  increment:0,
-  rate:0,
-  maxsize:0,
-  init: function(){
-    console.log("init variables");
-    this.speed = parseInt($("#speed").val());
-    this.increment = parseInt($("#increment").val());
-    this.rate = parseFloat($("#rate").val());
-    this.maxsize = parseInt($("#maxsize").val());
-    this.timeout = parseInt($("#timeout").val());
+params = {
+  list: ["speed", "increment", "rate", "maxsize", "timeout"],
+  getValuesFromFields: function(){
+    console.log("init params");
+    for(var p in this.list) {
+      var field = this.list[p];
+      this[field] = parseFloat($("#"+field).val());
+    }
     if(isNaN(this.maxsize) || this.maxsize === 0) {
       this.maxsize = Math.max(window.innerHeight, window.innerWidth);
     }
-    
     console.log(this);
   }
 };
   
+updateColor = function(picker) {
+  var hex;
+  if(typeof(picker.jscolor) == "undefined") {
+    hex = "#"+picker.val();
+  } else {
+    hex = picker.jscolor.toHEXString();
+  }
+  switch(picker.id) {
+    case "bgcolor":
+      $("body").css("background-color", hex);
+      container.elem.css("background-color", hex);
+      break;
+    case "circlecolor":
+      circle.elem.css("background-color", hex);
+      break;
+    case "loomcolor":
+      point.elem.css("background-color", hex);
+      break;
+  }
+};
 $(document).ready(function() {
   
-  console.log('hello world :o');
-  
+  // register shapes
   container = new FullscreenRectangle({	elem:$("#container") });
   circle = new Circle({
 	  elem: $("#circle"), 
@@ -42,6 +56,12 @@ $(document).ready(function() {
 	  r:10
   });
   
+  // update colors from saved params
+  updateColor($("#bgcolor")[0]);
+  updateColor($("#circlecolor")[0]);
+  updateColor($("#loomcolor")[0]);
+  
+  // define behavior
   container.elem.mousemove(function(e){
     if(!point.positionSet) {
       point.setStartingPosition(e.pageX, e.pageY);
@@ -50,9 +70,8 @@ $(document).ready(function() {
   
   container.elem.click(function(){
     if(point.positionSet) {
-      vars.init();
-	  point.startLooming();	  
-	  //point.loom();
+      params.getValuesFromFields();
+  	  point.startLooming();	  
     } else {
 		point.positionSet = true;
 	}
@@ -67,19 +86,4 @@ $(document).ready(function() {
       return false;     // cancel default menu
   };
   
-  updateColor = function(picker) {
-    var hex = picker.jscolor.toHEXString();
-    switch(picker.id) {
-      case "bgcolor":
-        $("body").css("background-color", hex);
-        container.elem.css("background-color", hex);
-        break;
-      case "circlecolor":
-        circle.elem.css("background-color", hex);
-        break;
-      case "loomcolor":
-        point.elem.css("background-color", hex);
-        break;
-    }
-  };
 });

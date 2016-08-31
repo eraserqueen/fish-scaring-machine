@@ -6,9 +6,12 @@ Circle = function (params){
         return new Circle(params);
 	
 	console.log("Registering new circle ", params);
-    this.elem = params.elem;	
+  this.elem = params.elem;	
 	this.setOrigin(params.x, params.y);
 	this.setRadius(params.r);
+	if( typeof(params.color)!="undefined") {
+	  this.elem.css("background-color", "#"+params.color);
+	}
 }
 Circle.prototype.setOrigin = function(x,y) {
 	this.x = x;
@@ -60,19 +63,19 @@ LoomingCircle.prototype.setStartingPosition = function(xMouse, yMouse){
 
 LoomingCircle.prototype.startLooming = function(){
 	var self = this;
-	interval = setInterval(function(){self.loom()}, vars.speed);
+	interval = setInterval(function(){self.loom()}, params.speed);
 };
 LoomingCircle.prototype.loom = function(){
-  if(this.radius < vars.maxsize) {
+  if(this.radius < params.maxsize) {
     // accelerate exponentially
-    vars.increment = vars.increment * vars.rate ;
-	this.setRadius(this.radius + vars.increment);
+    params.increment = params.increment * params.rate ;
+	this.setRadius(this.radius + params.increment);
   } else {
 	  // stop at max size
     console.log("done");
     clearInterval(interval);
 	var self = this;
-    setTimeout(function(){self.reset()}, vars.timeout);
+    setTimeout(function(){self.reset()}, params.timeout);
   }
 };
 
