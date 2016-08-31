@@ -23,111 +23,12 @@ vars = {
     console.log(this);
   }
 };
-mouse= {
-  x:0, y:0, // relative to container
-  orientation:0 // relative to circle origin
-};
-container= {
-  elem: $("#container"),
-  x:0, y:0, // top left corner
-  width:0,
-  height:0,
-  diagonal: 0,
-  init: function(elem) {
-    console.log("init container");
-    this.elem = elem;
-    this.width = Math.min(window.innerWidth, window.innerHeight);
-    this.height = this.width;
-    this.diagonal = Math.sqrt(this.width*this.width*2);
-    elem.css("width", this.width + "px");
-    elem.css("height", this.height + "px");
-    
-    this.x =(window.innerWidth - this.width) /2;
-    this.y =(window.innerHeight - this.height) /2;
-    
-    console.log("container", this);
-  }
-};
-
-Circle = function (params){
-	if (!(this instanceof Circle))
-        return new Circle(params);
-	
-	console.log("Registering new circle ", params);
-    this.elem = params.elem;	
-	this.setOrigin(params.x, params.y);
-	this.setRadius(params.r);
-}
-Circle.prototype.setOrigin = function(x,y) {
-	this.x = x;
-	this.y = y;
-	this.elem.css("top", (y-this.radius)+"px");
-	this.elem.css("left", (x-this.radius)+"px");
-};
-	
-Circle.prototype.setRadius = function(r){
-	this.radius = r;
-	this.elem.css("width", r*2+"px");
-	this.elem.css("height", r*2+"px");
-	this.setOrigin(this.x, this.y);
-};
-	
-
-LoomingCircle = function(params){
-	Circle.call(this, params);
-	this.positionSet = false;
-};
-LoomingCircle.prototype = Object.create(Circle.prototype);
-LoomingCircle.prototype.constructor = LoomingCircle;
-LoomingCircle.prototype.reset = function() {
-	this.setOrigin(circle.x, circle.y);
-	this.setRadius(10);
-	this.positionSet = false;
-};
-LoomingCircle.prototype.setStartingPosition = function(xMouse, yMouse){
-	this.reset();
-
-	mouse.x = xMouse - container.x;
-	mouse.y = yMouse - container.y;
-	mouse.orientation = mouse.x > circle.x ? 1 : -1;
-
-	//Tangent: tan(θ) = Opposite / Adjacent
-	//The inverse tangent function tan^-1 takes the ratio opposite/adjacent and gives the angle θ
-	var angle = Math.atan((circle.y - mouse.y) / (circle.x - mouse.x));
-	// The parametric equation for a circle is
-	// x = cx + r * cos(a)
-	// y = cy + r * sin(a)
-	// Where r is the radius, cx,cy the origin, and a the angle (in radians).
-	var x = circle.x + (circle.radius * Math.cos(angle) * mouse.orientation);
-	var y = circle.y + (circle.radius * Math.sin(angle) * mouse.orientation);
-
-	this.setOrigin(x,y);
-};
-
-LoomingCircle.prototype.startLooming = function(){
-	var self = this;
-	interval = setInterval(function(){self.loom()}, vars.speed);
-};
-LoomingCircle.prototype.loom = function(){
-  if(this.radius < vars.maxsize) {
-    // accelerate exponentially
-    vars.increment = vars.increment * vars.rate ;
-	this.setRadius(this.radius + vars.increment);
-  } else {
-	  // stop at max size
-    console.log("done");
-    clearInterval(interval);
-	var self = this;
-    setTimeout(function(){self.reset()}, vars.timeout);
-  }
-};
-
   
 $(document).ready(function() {
   
   console.log('hello world :o');
   
-  container.init($("#container"));
+  container = new FullscreenRectangle({	elem:$("#container") });
   circle = new Circle({
 	  elem: $("#circle"), 
 	  x:container.width/2, 
