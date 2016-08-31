@@ -86,17 +86,22 @@ Rectangle = function(params){
 	console.log("Registering new rectangle",params);
 	
 	this.elem = params.elem;
-	this.x = isNaN(params.x) ? 0: params.x;
-	this.y = isNaN(params.y) ? 0 : params.y;
 	this.width = params.width;
 	this.height = params.height;
-	this.diagonal = Math.sqrt(this.width*this.width*2);
-  
-  console.log(this);
+	this.diagonal = Math.sqrt(this.width*this.width*2);  
     this.elem.css("width", this.width + "px");
     this.elem.css("height", this.height + "px");
-    this.elem.css("top", this.y + "px");
-    this.elem.css("left", this.x + "px");
+	
+	if(!isNaN(params.x) && !isNaN(params.y)) {
+		this.x = params.x;
+		this.y = params.y;
+		this.elem.css("top", this.y + "px");
+		this.elem.css("left", this.x + "px");
+	} else {
+		this.x = 0;
+		this.y = 0;
+	}
+	console.log(this);
 };
 /*
 * extended class: FullscreenRectangle
@@ -105,10 +110,13 @@ FullscreenRectangle = function(params) {
 	this.elem = params.elem;
 	params.width = Math.min(window.innerWidth, window.innerHeight);
 	params.height = params.width;
-    params.x =(window.innerWidth - params.width) /2;
-    params.y =(window.innerHeight - params.height) /2;
 	
+	// init Rectangle without x,y params to enable margin:auto centering
 	Rectangle.call(this, params);
+	
+	// set x,y for future lookup
+    this.x =(window.innerWidth - params.width) /2;
+    this.y =(window.innerHeight - params.height) /2;
 };
 
 FullscreenRectangle.prototype = Object.create(Rectangle.prototype);
