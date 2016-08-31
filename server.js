@@ -13,7 +13,7 @@ app.get("/", function (request, response) {
     initializeDatastoreOnProjectCreation();
     var params = datastore.get("params");
     console.log("params", params);
-    if(typeof(params.color) == "undefined") {
+    if(typeof(params.speed) == "undefined") {
       datastore.set("params", defaultParams);
     }
     response.render('index.html', {
@@ -35,11 +35,9 @@ app.post("/params", function (request, response) {
       rate: post.rate,
       maxsize: post.maxsize,
       timeout: post.timeout,
-      color: {
-        bg: post.bgcolor,
-        circle: post.circlecolor,
-        loom: post.loomcolor
-      }
+      bgcolor: post.bgcolor,
+      circlecolor: post.circlecolor,
+      loomcolor: post.loomcolor
     };
     datastore.set("params", params);
     response.redirect("/");
@@ -74,9 +72,7 @@ var defaultParams = {
   rate:1.5,
   maxsize:0,
   timeout:2000,
-  color: {
-    bg:"000000",
-    circle:"333333",
-    loom:"ffffff"
-  }
+  bgcolor:"000000",
+  circlecolor:"333333",
+  loomcolor:"ffffff"
 };
