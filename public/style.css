@@ -19,6 +19,14 @@ fieldset legend {font-weight:bold;}
 fieldset input{
 	width:50px;
 }
+fieldset a {
+	text-decoration: none;
+	color:initial;
+}
+fieldset a:hover {
+	text-decoration:underline;
+}
+
 #container {
   top:0px;
   left: 0px;

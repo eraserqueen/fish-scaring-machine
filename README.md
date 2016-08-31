@@ -1,25 +1,30 @@
-Welcome to the HyperDev BETA
-============================
+# HyperDev persistence demo using DynamoDB
 
-Click `"Show"` in the header to see your app live. Updates to your code will instantly deploy and update live.
+This project demonstrates how to use the basic key-value store provided with all HyperDev containers through the config file:
 
-HyperDev is a developer playground that lets you code a real web-app without the slow setup and deployment steps. 
+  `var CONFIG_FILE = "./.hyperweb_aws_credentials.json";`
 
+It looks sort of like this:
 
-Your Project
-------------
+{
+  "hyperWebId": "[unique id]",
+  "accessKeyId": "[redacted]",
+  "secretAccessKey": "[redacted]",
+  "sessionToken": "[redacted]",
+  "expiration": "[valid for 1 hour at a time]",
+  "dynamodbKeyValueTable": "hyperweb-key-store",
+  "region": "us-east-1"
+}
 
-On the back-end,
-- your app starts at `server.js`
-- add frameworks and packages in `package.json`
-- safely store app secrets in `.env`
+When accessing the key value store the `hyperWebId` value must always be
+provided in the `hyperweb_id` attribute to access the containers data in
+the `dynamodbKeyValueTable` table. This is performed for you transparently
+by datastore.js.
 
-On the front-end,
-- edit `client.js`, `style.css` and `index.html`
-- drag in `assets`, like images or music, to add them to your project
+The credentials are container-specific and automatically refreshed.
 
+If you want to be able to create tables, avoid rate limits, or use functionality other than what is provided by the exports from datastore.js, you'll need your own credentials.Stick them in .env and use them instead.
 
-Made by Fog Creek
------------------
+There's a [walk-through blog post](https://hyperdev.com/blog/dynamodb-hyperdev-persistence-state-database/) available that guides you through the code in this project.
 
-\ ゜o゜)ノ
+For more HyperDev examples, check out the [Gallery](https://hyperdev.com/community/)

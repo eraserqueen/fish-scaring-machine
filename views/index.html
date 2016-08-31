@@ -34,20 +34,28 @@
           Circle size will adjust to window size after refresh<br/>
           Press F12 to see debug information
         </fieldset>
+        <form action="/params" method="POST">
         <fieldset id="colors">
             <legend>Colors</legend>
-            <label for="bgcolor">Background:</label><input id="bgcolor" class="jscolor" onchange="updateColor(this)" value="000000">
-            <label for="circlecolor">Circle:</label><input id="circlecolor" class="jscolor" onchange="updateColor(this)" value="333333">
-            <label for="loomcolor">Loom:</label><input id="loomcolor" class="jscolor" onchange="updateColor(this)" value="ffffff">
+            <label for="bgcolor">Background:</label><input id="bgcolor" name="bgcolor" class="jscolor" onchange="updateColor(this)" value="{{params.color.bg}}">
+            <label for="circlecolor">Circle:</label><input id="circlecolor" name="circlecolor" class="jscolor" onchange="updateColor(this)" value="{{params.color.circle}}">
+            <label for="loomcolor">Loom:</label><input id="loomcolor" name="loomcolor" class="jscolor" onchange="updateColor(this)" value="{{params.color.loom}}">
         </fieldset>
         <fieldset id="controls">
           <legend>Controls</legend>
-          <label for="speed">Looming speed (frame/ms):</label> <input type="text" id="speed" value="100"><br/>
-          <label for="increment">Looming increment (px/frame):</label> <input type="text" id="increment" value="1"><br/>
-          <label for="rate">Accelaration (multiplier/frame):</label> <input type="text" id="rate" value="1.5"><br/>
-          <label for="maxsize">Final size (px, defaults to fullscreen):</label> <input type="text" id="maxsize" value=""><br/>
-          <label for="timeout">Wait time after looming (ms):</label> <input type="text" id="timeout" value="2000">
+          <label for="speed">Looming speed (frame/ms):</label> <input type="text" id="speed" name="speed" value="{{params.speed}}"><br/>
+          <label for="increment">Looming increment (px/frame):</label> <input type="text" id="increment" name="increment" value="{{params.increment}}"><br/>
+          <label for="rate">Accelaration (multiplier/frame):</label> <input type="text" id="rate" name="rate" value="{{params.rate}}"><br/>
+          <label for="maxsize">Final size (px, defaults to fullscreen):</label> <input type="text" id="maxsize" name="maxsize" value="{{params.maxsize}}"><br/>
+          <label for="timeout">Wait time after looming (ms):</label> <input type="text" id="timeout" name="timeout" value="{{params.timeout}}"><br/>
+          <button type="submit">Save Settings</button>
         </fieldset>
+        </form>
+		<fieldset id="contact">
+		<legend>Info/Support</legend>
+			<i class="fa fa-github" aria-hidden="true"></i> <a href="https://github.com/eraserqueen/fish-scaring-machine" target="_blank">source code on Github</a><br/>
+			<i class="fa fa-twitter" aria-hidden="true"></i> <a href="https://twitter.com/eraserqueen" target="_blank">@eraserqueen</a>
+		</fieldset>
       </div>
     </div>
     <div id ="container">
@@ -61,6 +69,7 @@
             integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
             crossorigin="anonymous"></script>
     <script src="/client.js"></script>
+    <script src="/shapes.js"></script>
 
   </body>
 </html>
