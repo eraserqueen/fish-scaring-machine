@@ -4,13 +4,16 @@
   "description": "Demonstrate the DynamoDB available in HyperDev",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "sh test-and-deploy.sh",
+    "test": "mocha"
   },
   "dependencies": {
     "hyperweb": "0.0.9",
     "nunjucks": "^1.3.4",
     "aws-sdk": "^2.2.12",
-    "synchronize": "^0.9.14"
+    "synchronize": "^0.9.14",
+		"mocha": "*",
+		"chai": "*"
   },
   "keywords": [
     "node",
